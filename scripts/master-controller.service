@@ -1,0 +1,18 @@
+[Unit]
+Description=Master controller for gnIoT
+After=multi-user.target
+# to be checked: Requires=network.target
+
+[Service]
+Type=idle
+User=root
+ExecStart=/home/pi/playground/master_controller
+StandardOutput=null
+StandardError=journal+console
+# TTYPath=ttyS0
+Restart=no
+# no, always, on-success, on-failure
+# RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -6,7 +6,7 @@
 
 #define MODE_GPIO           0
 #define MODE_PWM            1
-#define RUN_MODE            MODE_PWM
+#define RUN_MODE            MODE_GPIO
 
 #define LED_PIN         4
 #define PWM_RANGE       1000
@@ -59,12 +59,12 @@ void bspBeep(void)
     #if RUN_MODE == MODE_GPIO
         uint8_t level = iteration % 2;
         gpioWrite(LED_PIN, level);
-        printf("level = %d\n", level);
+        printf("\tBSP: level = %d\n", level);
     #else
         size_t counter = iteration % (PWM_LOOP_COUNT + 1);
         uint16_t pwm = (PWM_RANGE * counter) / PWM_LOOP_COUNT;
         gpioPWM(LED_PIN, pwm);
-        printf("pwm = %d\n", pwm);
+        printf("\tBSP: pwm = %d\n", pwm);
     #endif
 
     iteration++;

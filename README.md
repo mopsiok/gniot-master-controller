@@ -1,5 +1,23 @@
 # master-controller
 
+## RPI Zero W setup (Not validated)
+
+1. Access your RPI SD card and edit `config.txt` file, adding:
+    ```
+    enable_uart=1
+    ```
+
+2. Make sure that the line below is present in `cmdline.txt`:
+    ```
+    console=serial0,115200 console=tty1
+    ```
+
+3. After login:
+    ```
+    sudo apt-get update
+    sudo apt-get upgrade
+    ```
+
 ## Quick startup
 
 ```bash

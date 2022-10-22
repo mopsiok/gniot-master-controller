@@ -1,0 +1,9 @@
+version: '3'
+services:
+  rpi-master-controller:
+    build: .
+    container_name: rpi-master-controller
+    working_dir: /home
+    tty: true
+    volumes:
+      - .:/home

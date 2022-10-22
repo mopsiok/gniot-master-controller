@@ -83,6 +83,49 @@ BspGpioHandler bspPwmConfig(BspPwmConfig * config);
  */
 void bspPwmSetValue(BspPwmHandler handler, unsigned int value);
 
+/**
+ * @brief Configure SPI interface.
+ * Check BspSpiConfig typedef for more details.
+ * 
+ * @param config Configuration structure.
+ * @param result Pointer to resulting handler and other useful data.
+ */
+void bspSpiConfig(BspSpiConfig * config, BspSpiHandler * result);
+
+/**
+ * @brief Deinitialize SPI interface.
+ * 
+ * @param handler Pointer to SPI handler.
+ */
+void bspSpiDeinit(BspSpiHandler * handler);
+
+/**
+ * @brief Read bytes from given SPI handler.
+ * 
+ * @param handler Pointer to SPI handler.
+ * @param count Number of bytes to read.
+ * @return int Number of bytes actually read, or error if <0.
+ */
+int bspSpiRead(BspSpiHandler * handler, uint32_t count);
+
+/**
+ * @brief Write bytes from given SPI handler.
+ * 
+ * @param handler Pointer to SPI handler.
+ * @param count Number of bytes to write.
+ * @return int Number of bytes actually written, or error if <0.
+ */
+int bspSpiWrite(BspSpiHandler * handler, uint32_t count);
+
+/**
+ * @brief Simultaneous read and write bytes from given SPI handler.
+ * 
+ * @param handler Pointer to SPI handler.
+ * @param count Number of bytes to read/write.
+ * @return int Number of bytes actually read/written, or error if <0.
+ */
+int bspSpiReadWrite(BspSpiHandler * handler, uint32_t count);
+
 #ifdef __cplusplus
 }
 #endif

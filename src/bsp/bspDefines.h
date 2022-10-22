@@ -11,6 +11,7 @@
 // Includes ========================================
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,17 +21,12 @@ extern "C" {
 
 // Typedefs ========================================
 
-/* Peripheral handler types */
+/* Helper types */
+typedef unsigned int BspGpioPin;
 typedef unsigned int BspGpioHandler;
 typedef unsigned int BspPwmHandler;
 
 /* GPIO configuration */
-typedef enum
-{
-    GPIO_4 = 4,
-    GPIO_17 = 17,
-} BspGpioPin;
-
 typedef enum
 {
     GPIO_MODE_INPUT = 0,
@@ -52,7 +48,7 @@ typedef enum
 
 typedef struct
 {
-    BspGpioPin pin;
+    BspGpioPin gpio;
     BspGpioMode mode;
     BspGpioPull pull;
     bool defaultState;
@@ -61,13 +57,52 @@ typedef struct
 /* PWM configuration */
 typedef struct
 {
-    BspGpioPin pin;
+    BspGpioPin gpio;
     unsigned int frequency;
     unsigned int range;
     unsigned int defaultValue;
 } BspPwmConfig;
 
 /* SPI configuration */
+typedef enum
+{
+    BSP_SPI_TYPE_MAIN = 0,  /* MISO=9,  MOSI=10, SCLK=11, CE0=8,  CE1=7,  CE2=-  */
+    BSP_SPI_TYPE_AUX = 1,   /* MISO=19, MOSI=20, SCLK=21, CE0=18, CE1=17, CE2=16 */
+} BspSpiType;
+
+typedef enum
+{
+    BSP_SPI_MODE_POL0_PHA0 = 0b00,
+    BSP_SPI_MODE_POL0_PHA1 = 0b01,
+    BSP_SPI_MODE_POL1_PHA0 = 0b10,
+    BSP_SPI_MODE_POL1_PHA1 = 0b11,
+} BspSpiMode;
+
+typedef struct
+{
+    unsigned int handler;
+    uint8_t * txBuffer;
+    uint8_t * rxBuffer;
+    uint32_t maxBufferSize;
+} BspSpiHandler;
+
+typedef struct
+{
+    BspSpiType type;                /* SPI type, main or auxiliary */
+    uint8_t channel;                /* 0..2, CE pin to use, 2 is for AUX only */
+    uint32_t baudrate;              /* baudrate, >32kHz and <30MHz */
+    uint8_t * txBuffer;             /* pointer to allocated transmit buffer, NULL if not used */
+    uint8_t * rxBuffer;             /* pointer to allocated receive buffer, NULL if not used */
+    uint32_t maxBufferSize;         /* buffer(s) length in bytes */
+    BspSpiMode mode;                /* polarity and phase, for AUX SPI only 0 and 2 are working*/
+    bool csActiveState[3];          /* given CE pin is active high (true) or low (false) */
+    bool csEnabled[3];              /* given CE pin is enabled (true) or disabled (false) */
+    bool mainHalfDuplex;            /* 3-wire (true) or 4-wire (false); Main SPI only */
+    uint8_t mainHalfDuplexLen;      /* 0..15, for mainHalfDuplex only; number of bytes to write before switching to read mode */
+    bool auxTxLsbFirst;             /* LSB transmitted first (true) or MSB first (false) - AUX SPI only*/
+    bool auxRxLsbFirst;             /* LSB received first (true) or MSB first (false) - AUX SPI only*/
+    uint8_t auxWordSize;            /* 0..32, word size in bits - AUX SPI only */
+} BspSpiConfig;
 
 // Exported variables ==============================
 

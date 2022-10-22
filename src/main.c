@@ -39,6 +39,7 @@ int main()
 
         ledToggleState();
         pwmSetValue((250 + i * 100) % PWM_MAX_VALUE);
+        spiReceive();
         usleep(LOOP_DELAY_US);
     }
 

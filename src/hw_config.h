@@ -27,6 +27,7 @@ extern "C" {
 void hardwareConfig(void);
 void ledToggleState(void);
 void pwmSetValue(unsigned int value);
+uint16_t spiReceive();
 
 
 #ifdef __cplusplus

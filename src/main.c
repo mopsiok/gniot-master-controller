@@ -38,6 +38,7 @@ int main()
         printf("elapsed: %05.2f\n", dt * i);
 
         ledToggleState();
+        pwmSetValue((250 + i * 100) % PWM_MAX_VALUE);
         usleep(LOOP_DELAY_US);
     }
 

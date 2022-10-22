@@ -8,6 +8,7 @@
 // Includes ========================================
 #include <pigpio.h>
 #include <assert.h>
+#include <stdio.h> //TODO debug module
 
 #include "bsp.h"
 
@@ -67,6 +68,28 @@ void bspGpioSetState(BspGpioHandler handler, bool state)
 void bspGpioToggleState(BspGpioHandler handler)
 {
     bspGpioSetState(handler, !bspGpioGetState(handler));
+}
+
+
+BspPwmHandler bspPwmConfig(BspPwmConfig * config)
+{
+    assert(NULL != config && "wrong input parameters");
+
+    gpioPWM(config->pin, 0);
+    gpioSetPWMrange(config->pin, config->range);
+    gpioSetPWMfrequency(config->pin, config->frequency);
+    gpioPWM(config->pin, config->defaultValue);
+
+    unsigned int realRange = gpioGetPWMrealRange(config->pin);
+    printf("real range: %d\n", realRange); //TODO debug module
+    assert(realRange == config->range && "PWM range mismatch, configuration change is needed");
+
+    return (BspPwmHandler)(config->pin);
+}
+
+void bspPwmSetValue(BspPwmHandler handler, unsigned int value)
+{
+    gpioPWM(handler, value);
 }
 
 

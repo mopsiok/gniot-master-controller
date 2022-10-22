@@ -20,10 +20,15 @@ extern "C" {
 
 // Typedefs ========================================
 
+/* Peripheral handler types */
+typedef unsigned int BspGpioHandler;
+typedef unsigned int BspPwmHandler;
+
 /* GPIO configuration */
 typedef enum
 {
     GPIO_4 = 4,
+    GPIO_17 = 17,
 } BspGpioPin;
 
 typedef enum
@@ -53,7 +58,14 @@ typedef struct
     bool defaultState;
 } BspGpioConfig;
 
-typedef int BspGpioHandler;
+/* PWM configuration */
+typedef struct
+{
+    BspGpioPin pin;
+    unsigned int frequency;
+    unsigned int range;
+    unsigned int defaultValue;
+} BspPwmConfig;
 
 /* SPI configuration */
 

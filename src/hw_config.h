@@ -16,6 +16,7 @@ extern "C" {
 #endif
 
 // Macros and defines ==============================
+#define PWM_MAX_VALUE           2000
 
 // Typedefs ========================================
 
@@ -25,6 +26,7 @@ extern "C" {
 
 void hardwareConfig(void);
 void ledToggleState(void);
+void pwmSetValue(unsigned int value);
 
 
 #ifdef __cplusplus

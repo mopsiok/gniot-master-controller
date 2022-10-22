@@ -1,29 +1,47 @@
+/**
+ * @file main.c
+ * @brief gnIoT master controller main file.
+ * 
+ * @author mopsiok
+ */
 
+// Includes ========================================
+#include <stdint.h>
+#include <stdbool.h>
 #include <stdio.h>
-#include <unistd.h>
 
-#include "bsp.h"
+#include "hw_config.h"
 
-#define LOOP_COUNT      100
-#define LOOP_DELAY_US   100000
+// Private macros and defines ======================
+#define LOOP_COUNT      20
+#define LOOP_DELAY_US   500000
+
+// Private typedefs ================================
+
+// Static variables ================================
+
+// Global and extern variables =====================
+
+// Static function prototypes ======================
+
+// Static functions ================================
+
+// Global functions ================================
 
 int main()
 {
+    hardwareConfig();
+    
     float dt = LOOP_DELAY_US / 1000000.0f;
-
-    int ret = bspInit();
-    if (ret < 0)
-    {
-        return ret;
-    }
-
     for (int i = 0; i <= LOOP_COUNT; i++)
     {
         printf("elapsed: %05.2f\n", dt * i);
 
-        bspBeep();
+        ledToggleState();
         usleep(LOOP_DELAY_US);
     }
+
+    bspDeinit();
 
     printf("Done.\n");
     return 0;

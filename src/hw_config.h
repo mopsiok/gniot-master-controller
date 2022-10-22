@@ -1,15 +1,15 @@
 /**
- * @file bsp.h
- * @brief BSP wrapper
+ * @file hw_config.h
+ * @brief Hardware configuration.
  * 
  * @author mopsiok
  */
 
-#ifndef BSP_H
-#define BSP_H
+#ifndef HW_CONFIG_H
+#define HW_CONFIG_H
 
 // Includes ========================================
-#include "bspDefines.h"
+#include "bsp.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,13 +23,9 @@ extern "C" {
 
 // Global function prototypes ======================
 
-void bspInit(void);
-void bspDeinit(void);
+void hardwareConfig(void);
+void ledToggleState(void);
 
-BspGpioHandler bspGpioConfig(BspGpioConfig * config);
-bool bspGpioGetState(BspGpioHandler handler);
-void bspGpioSetState(BspGpioHandler handler, bool state);
-void bspGpioToggleState(BspGpioHandler handler);
 
 #ifdef __cplusplus
 }

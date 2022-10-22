@@ -1,6 +1,7 @@
 
 add_executable(master_controller
     main.c
+    hw_config.c
     bsp/bsp.c
 )
 

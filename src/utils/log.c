@@ -28,10 +28,23 @@ static const char rawDataIndentation[]      = "                             ";
 // Global and extern variables =====================
 
 // Static function prototypes ======================
+/**
+ * @brief Printing optional description.
+ * 
+ * @param description Use NULL if not used.
+ */
+static void printOptionalDescription(const char * description);
+
+/**
+ * @brief Convert log level to its text description.
+ * 
+ * @param level Log level.
+ * @return const char* String associated with given log level.
+ */
+static const char * getLogLevelDescription(int level);
 
 // Static functions ================================
-
-void printOptionalDescription(const char * description)
+static void printOptionalDescription(const char * description)
 {
     if (description)
     {
@@ -40,7 +53,7 @@ void printOptionalDescription(const char * description)
     }
 }
 
-const char * getLogLevelDescription(int level)
+static const char * getLogLevelDescription(int level)
 {
     switch (level)
     {

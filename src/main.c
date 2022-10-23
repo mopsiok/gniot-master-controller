@@ -13,8 +13,14 @@
 #include "utils/log.h"
 
 // Private macros and defines ======================
-#define LOOP_COUNT      20
-#define LOOP_DELAY_US   500000
+#define HEATER_TIMER_ID         0
+#define LED_TIMER_ID            1
+
+#define HEATER_TIMER_PERIOD_MS  500
+#define LED_TIMER_PERIOD_MS     150
+
+#define MAIN_LOOP_SLEEP_S       10
+
 
 // Private typedefs ================================
 
@@ -25,6 +31,21 @@
 // Static function prototypes ======================
 
 // Static functions ================================
+static void heaterCallback(void)
+{
+    static int i = 0;
+
+    setHeaterPower((250 + i * 100) % HEATER_MAX_PWM_VALUE);
+    float temp = getHeaterTemperature();
+    logDebug("temperature: %5.2f", temp);
+    
+    i++;
+}
+
+static void ledCallback(void)
+{
+    ledToggleState();
+}
 
 // Global functions ================================
 
@@ -34,17 +55,12 @@ int main()
 
     hardwareInit();
 
-    for (int i = 0; i <= LOOP_COUNT; i++)
-    {
-        ledToggleState();
-        setHeaterPower((250 + i * 100) % HEATER_MAX_PWM_VALUE);
-        float temp = getHeaterTemperature();
+    bspTimerStart(HEATER_TIMER_ID, HEATER_TIMER_PERIOD_MS, heaterCallback);
+    bspTimerStart(LED_TIMER_ID, LED_TIMER_PERIOD_MS, ledCallback);
 
-        logDebug("temperature: %5.2f", temp);
+    usleep(MAIN_LOOP_SLEEP_S*1000000UL);
 
-        usleep(LOOP_DELAY_US);
-    }
-
+    bspTimerStopAll();
     hardwareDeinit();
 
     logInfo("Exiting.");

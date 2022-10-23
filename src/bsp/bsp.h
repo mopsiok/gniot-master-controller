@@ -16,6 +16,7 @@ extern "C" {
 #endif
 
 // Macros and defines ==============================
+typedef void (*bspTimerFunc)    (void);
 
 // Typedefs ========================================
 
@@ -125,6 +126,30 @@ int bspSpiWrite(BspSpiHandler * handler, uint32_t count);
  * @return int Number of bytes actually read/written, or error if <0.
  */
 int bspSpiReadWrite(BspSpiHandler * handler, uint32_t count);
+
+/**
+ * @brief Start periodic execution of given callback using a specified timer.
+ * 
+ * @param timer Timer id [0..9].
+ * @param period Repeat period in ms [10..60000].
+ * @param callback Callback to execute: void callback(void).
+ * @return true if started properly, false otherwise.
+ */
+bool bspTimerStart(unsigned int timer, unsigned int period, bspTimerFunc callback);
+
+/**
+ * @brief Stop specified timer.
+ * 
+ * @param timer Timer id [0..9].
+ * @return true if stopped properly, false otherwise.
+ */
+bool bspTimerStop(unsigned int timer);
+
+/**
+ * @brief Stop all timers.
+ * 
+ */
+void bspTimerStopAll();
 
 #ifdef __cplusplus
 }

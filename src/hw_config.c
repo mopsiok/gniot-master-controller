@@ -66,14 +66,14 @@ void hardwareInit(void)
         };
     bspSpiConfig(&thermConfig, &thermSpiHandler);
 
-    logInfo("Hardware successfully initialized.");
+    logInfo("Hardware initialized.");
 }
 
 void hardwareDeinit(void)
 {
     bspSpiDeinit(&thermSpiHandler);
     bspDeinit();
-    logInfo("Hardware successfully deinitialized.");
+    logInfo("Hardware deinitialized.");
 }
 
 void setHeaterPower(uint16_t dutyCycle)

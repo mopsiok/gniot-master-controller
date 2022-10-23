@@ -8,6 +8,7 @@
 // Includes ========================================
 #include <pigpio.h>
 #include <assert.h>
+#include <stddef.h>
 
 #include "bsp.h"
 #include "../utils/log.h"
@@ -27,6 +28,7 @@
 #define SPI_CONFIG_HALFDUPLEX_BYTES_MASK 0b1111UL
 #define SPI_CONFIG_WORDSIZE_MASK 0b111111UL
 
+#define TIMERS_COUNT 10
 
 // Private typedefs ================================
 
@@ -188,4 +190,38 @@ int bspSpiReadWrite(BspSpiHandler * handler, uint32_t count)
 {
     bspSpiValidateHandler(handler, count, true, true);
     return spiXfer(handler->handler, (char*)handler->txBuffer, (char*)handler->rxBuffer, count);
+}
+
+/* ================================================================================= */
+/*                                    Timers                                         */
+/* ================================================================================= */
+
+bool bspTimerStart(unsigned int timer, unsigned int period, bspTimerFunc callback)
+{
+    int result = gpioSetTimerFunc(timer, period, callback);
+    if (result != 0)
+    {
+        logError("Timer %d start failed with code: %d.", timer, result);
+        return false;
+    }
+    return true;
+}
+
+bool bspTimerStop(unsigned int timer)
+{
+    int result = gpioSetTimerFunc(timer, 0, NULL);
+    if (result != 0)
+    {
+        logError("Timer %d stop failed with code: %d.", timer, result);
+        return false;
+    }
+    return true;
+}
+
+void bspTimerStopAll()
+{
+    for (unsigned int channel=0; channel<TIMERS_COUNT; channel++)
+    {
+        gpioSetTimerFunc(channel, 0, NULL);
+    }
 }

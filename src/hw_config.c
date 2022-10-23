@@ -6,19 +6,24 @@
  */
 
 // Includes ========================================
+#include <stdint.h>
 #include "hw_config.h"
 #include "utils/log.h"
 
 // Private macros and defines ======================
-#define SPI_BUFFER_SIZE 2
+#define THERMOMETER_SPI_BUFFER_SIZE     2
+#define THERMOMETER_MAX_TEMPERATURE     1023.75f
+#define THERMOMETER_MAX_CODE            4095.0f
+
+#define MIN(a,b) ((a) < (b) ? a : b)
 
 // Private typedefs ================================
 
 // Static variables ================================
 static BspGpioHandler ledHandler;
-static BspPwmHandler pwmHandler;
-static BspSpiHandler spiHandler;
-static uint8_t spiRxBuffer[SPI_BUFFER_SIZE];
+static BspPwmHandler heaterPwmHandler;
+static BspSpiHandler thermSpiHandler;
+static uint8_t thermRxBuffer[THERMOMETER_SPI_BUFFER_SIZE];
 
 // Global and extern variables =====================
 
@@ -27,7 +32,6 @@ static uint8_t spiRxBuffer[SPI_BUFFER_SIZE];
 // Static functions ================================
 
 // Global functions ================================
-
 void hardwareInit(void)
 {
     bspInit();
@@ -40,51 +44,55 @@ void hardwareInit(void)
         };
     ledHandler = bspGpioConfig(&ledConfig);
 
-    BspPwmConfig pwmConfig = {
+    BspPwmConfig heaterConfig = {
         .gpio = 17,
-        .range = PWM_MAX_VALUE,
+        .range = HEATER_MAX_PWM_VALUE,
         .frequency = 100,
-        .defaultValue = 250,
+        .defaultValue = 0,
         };
-    pwmHandler = bspPwmConfig(&pwmConfig);
+    heaterPwmHandler = bspPwmConfig(&heaterConfig);
 
-    BspSpiConfig spiConfig = {
+    BspSpiConfig thermConfig = {
         .type = BSP_SPI_TYPE_MAIN,
         .channel = 0,
         .baudrate = 100000,
         .txBuffer = NULL,
-        .rxBuffer = spiRxBuffer,
-        .maxBufferSize = SPI_BUFFER_SIZE,
+        .rxBuffer = thermRxBuffer,
+        .maxBufferSize = THERMOMETER_SPI_BUFFER_SIZE,
         .mode = BSP_SPI_MODE_POL0_PHA0,
         .csActiveState = {false, false, false},
         .csEnabled = {true, false, false},
         .mainHalfDuplex = false,
         };
-    bspSpiConfig(&spiConfig, &spiHandler);
+    bspSpiConfig(&thermConfig, &thermSpiHandler);
 
     logInfo("Hardware successfully initialized.");
 }
 
 void hardwareDeinit(void)
 {
-    bspSpiDeinit(&spiHandler);
+    bspSpiDeinit(&thermSpiHandler);
     bspDeinit();
     logInfo("Hardware successfully deinitialized.");
 }
 
+void setHeaterPower(uint16_t dutyCycle)
+{
+    dutyCycle = MIN(dutyCycle, HEATER_MAX_PWM_VALUE);
+    bspPwmSetValue(heaterPwmHandler, dutyCycle);
+}
+
+float getHeaterTemperature(void)
+{
+    bspSpiRead(&thermSpiHandler, THERMOMETER_SPI_BUFFER_SIZE);
+    uint8_t * buffer = thermSpiHandler.rxBuffer;
+    uint16_t value = (buffer[0] << 8) | buffer[1];
+    value >>= 3; //discard non important flags
+    return (value * THERMOMETER_MAX_TEMPERATURE) / THERMOMETER_MAX_CODE;
+}
+
 void ledToggleState(void)
 {
+    //TODO temporary
     bspGpioToggleState(ledHandler);
-}
-
-void pwmSetValue(unsigned int value)
-{
-    bspPwmSetValue(pwmHandler, value);
-}
-
-uint16_t spiReceive()
-{
-    bspSpiRead(&spiHandler, SPI_BUFFER_SIZE);
-    logDebugMemory(spiHandler.rxBuffer, 2, "SPI rx");
-    return 1000;
 }

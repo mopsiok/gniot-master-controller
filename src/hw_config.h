@@ -16,7 +16,7 @@ extern "C" {
 #endif
 
 // Macros and defines ==============================
-#define PWM_MAX_VALUE           2000
+#define HEATER_MAX_PWM_VALUE            2000
 
 // Typedefs ========================================
 
@@ -24,11 +24,33 @@ extern "C" {
 
 // Global function prototypes ======================
 
+/**
+ * @brief Hardware initialization, execute before application init.
+ * 
+ */
 void hardwareInit(void);
+
+/**
+ * @brief Hardware deinitialization, execute before exiting the program.
+ * 
+ */
 void hardwareDeinit(void);
+
+/**
+ * @brief Set heater PWM output to given duty cycle.
+ * 
+ * @param dutyCycle Duty cycle in PWM ticks, [0 to HEATER_MAX_PWM_VALUE].
+ */
+void setHeaterPower(uint16_t dutyCycle);
+
+/**
+ * @brief Get single temperature readout from heater thermocouple (via MAX6675).
+ * 
+ * @return float Temperature sample in Celsius [0 to 1023.75*C].
+ */
+float getHeaterTemperature(void);
+
 void ledToggleState(void);
-void pwmSetValue(unsigned int value);
-uint16_t spiReceive();
 
 
 #ifdef __cplusplus

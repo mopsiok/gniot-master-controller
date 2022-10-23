@@ -13,7 +13,7 @@
 #include "utils/log.h"
 
 // Private macros and defines ======================
-#define LOOP_COUNT      5
+#define LOOP_COUNT      20
 #define LOOP_DELAY_US   500000
 
 // Private typedefs ================================
@@ -34,14 +34,13 @@ int main()
 
     hardwareInit();
 
-    float dt = LOOP_DELAY_US / 1000000.0f;
     for (int i = 0; i <= LOOP_COUNT; i++)
     {
-        logInfo("elapsed: %05.2f", dt * i);
-
         ledToggleState();
-        pwmSetValue((250 + i * 100) % PWM_MAX_VALUE);
-        spiReceive();
+        setHeaterPower((250 + i * 100) % HEATER_MAX_PWM_VALUE);
+        float temp = getHeaterTemperature();
+
+        logDebug("temperature: %5.2f", temp);
 
         usleep(LOOP_DELAY_US);
     }

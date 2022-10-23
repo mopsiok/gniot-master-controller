@@ -9,7 +9,7 @@
 #define HW_CONFIG_H
 
 // Includes ========================================
-#include "bsp.h"
+#include "bsp/bsp.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,7 +24,8 @@ extern "C" {
 
 // Global function prototypes ======================
 
-void hardwareConfig(void);
+void hardwareInit(void);
+void hardwareDeinit(void);
 void ledToggleState(void);
 void pwmSetValue(unsigned int value);
 uint16_t spiReceive();

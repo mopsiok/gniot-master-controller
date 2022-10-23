@@ -8,9 +8,9 @@
 // Includes ========================================
 #include <pigpio.h>
 #include <assert.h>
-#include <stdio.h> //TODO debug module
 
 #include "bsp.h"
+#include "../utils/log.h"
 
 // Private macros and defines ======================
 #define SPI_CONFIG_MODE_POS 0UL
@@ -124,7 +124,7 @@ BspPwmHandler bspPwmConfig(BspPwmConfig * config)
     gpioPWM(config->gpio, config->defaultValue);
 
     unsigned int realRange = gpioGetPWMrealRange(config->gpio);
-    printf("real range: %d\n", realRange); //TODO debug module
+    logDebug("PWM real range for pin %d: %d", config->gpio, realRange);
     assert(realRange == config->range && "PWM range mismatch, check configuration");
 
     return (BspPwmHandler)(config->gpio);
@@ -156,7 +156,8 @@ void bspSpiConfig(BspSpiConfig * config, BspSpiHandler * result)
     flags |= (config->auxTxLsbFirst) ? (1UL<<SPI_CONFIG_LSB_TX_POS) : 0;
     flags |= (config->auxRxLsbFirst) ? (1UL<<SPI_CONFIG_LSB_RX_POS) : 0;
     flags |= (config->auxWordSize & SPI_CONFIG_WORDSIZE_MASK) << SPI_CONFIG_WORDSIZE_POS;
-    printf("flags: %d\n", flags); //TODO remove
+    logDebug("SPI flags for channel %d: ", config->channel, flags);
+    
     result->handler = spiOpen(config->channel, config->baudrate, flags);
     assert(result->handler >= 0 && "failed to initialize SPI, check configuration");
 

@@ -3,13 +3,13 @@ add_executable(master_controller
     main.c
     hw_config.c
     bsp/bsp.c
+    utils/log.c
 )
 
 # TODO will break future test mocks, to be moved to main cmake?
 # TODO most probably TEST/RPI define handled here
 target_include_directories(master_controller PUBLIC
     ../external/pigpio
-    bsp
 )
 
 target_link_libraries(master_controller PUBLIC 

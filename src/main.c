@@ -8,12 +8,12 @@
 // Includes ========================================
 #include <stdint.h>
 #include <stdbool.h>
-#include <stdio.h>
 
 #include "hw_config.h"
+#include "utils/log.h"
 
 // Private macros and defines ======================
-#define LOOP_COUNT      20
+#define LOOP_COUNT      5
 #define LOOP_DELAY_US   500000
 
 // Private typedefs ================================
@@ -30,21 +30,24 @@
 
 int main()
 {
-    hardwareConfig();
-    
+    logInfo("gnIoT master controller");
+
+    hardwareInit();
+
     float dt = LOOP_DELAY_US / 1000000.0f;
     for (int i = 0; i <= LOOP_COUNT; i++)
     {
-        printf("elapsed: %05.2f\n", dt * i);
+        logInfo("elapsed: %05.2f", dt * i);
 
         ledToggleState();
         pwmSetValue((250 + i * 100) % PWM_MAX_VALUE);
         spiReceive();
+
         usleep(LOOP_DELAY_US);
     }
 
-    bspDeinit();
+    hardwareDeinit();
 
-    printf("Done.\n");
+    logInfo("Exiting.");
     return 0;
 }

@@ -7,6 +7,7 @@
 
 // Includes ========================================
 #include "hw_config.h"
+#include "utils/log.h"
 
 // Private macros and defines ======================
 #define SPI_BUFFER_SIZE 2
@@ -27,7 +28,7 @@ static uint8_t spiRxBuffer[SPI_BUFFER_SIZE];
 
 // Global functions ================================
 
-void hardwareConfig(void)
+void hardwareInit(void)
 {
     bspInit();
 
@@ -60,6 +61,15 @@ void hardwareConfig(void)
         .mainHalfDuplex = false,
         };
     bspSpiConfig(&spiConfig, &spiHandler);
+
+    logInfo("Hardware successfully initialized.");
+}
+
+void hardwareDeinit(void)
+{
+    bspSpiDeinit(&spiHandler);
+    bspDeinit();
+    logInfo("Hardware successfully deinitialized.");
 }
 
 void ledToggleState(void)
@@ -72,10 +82,9 @@ void pwmSetValue(unsigned int value)
     bspPwmSetValue(pwmHandler, value);
 }
 
-#include <stdio.h> //TODO
 uint16_t spiReceive()
 {
     bspSpiRead(&spiHandler, SPI_BUFFER_SIZE);
-    printf("\tSPI: %02x %02x\n", spiHandler.rxBuffer[0], spiHandler.rxBuffer[1]);
+    logDebugMemory(spiHandler.rxBuffer, 2, "SPI rx");
     return 1000;
 }

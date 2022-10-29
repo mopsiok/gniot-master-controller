@@ -48,7 +48,7 @@ static void printOptionalDescription(const char * description)
 {
     if (description)
     {
-        printf(description);
+        printf(description); //TODO change to puts?
         printf(": ");
     }
 }

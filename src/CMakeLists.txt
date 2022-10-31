@@ -1,5 +1,3 @@
-cmake_policy(SET CMP0076 NEW) #supress warning about absolute paths
-
 if(TARGET_GROUP STREQUAL device)
     add_executable(master_controller)
     set_property(TARGET master_controller PROPERTY C_STANDARD 11)

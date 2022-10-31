@@ -26,8 +26,14 @@ void setUp(void) { }
 
 void tearDown(void) { }
 
+#include <stdio.h>
+#include "../src/utils/log.h"
 void simple_test1(void)
 {
+    logError("Test error: %d", LOG_LEVEL);
+    logInfo("Test info: %d", LOG_LEVEL);
+    logDebug("Test debug: %d", LOG_LEVEL);
+
     TEST_ASSERT_EQUAL_INT(10, 10);
 }
 
